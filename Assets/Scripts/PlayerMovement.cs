@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,11 +17,19 @@ public class PlayerMovement : MonoBehaviour
 
     bool isIdling = false;
     bool isWalking = false;
+    bool isRunning = false;
 
-
+    
     Vector2 moveInput;
     Rigidbody2D myRb;
+
+    [Header("Animation and Movement variables")]
     [SerializeField]float walkingSpeed;
+    [SerializeField] float runningSpeed;
+    [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
+    [SerializeField] float leftStickSensitivity = 0.2f;
+
+    //Assigning to variables
     void Start()
     {
         playerAnimator= GetComponent<Animator>();
@@ -28,45 +37,64 @@ public class PlayerMovement : MonoBehaviour
         myRb= GetComponent<Rigidbody2D>();
     }
 
- 
     void Update()
-    {
-        if (Time.time - lastTimeIdle >= 4f)
-        {
-            lastTimeIdle = Time.time;
-            isIdling = true;
-            StartCoroutine(IdlingTimeGap());
-
-        }
-
+    {    
         SpriteChangesInAction();
     }
 
     void FixedUpdate()
     {
-        Walk();
+        WalkingAndRunningHandle();
     }
     void LateUpdate()
     {
-        AnimationHandling();
+        AnimationHandle();
     }
 
-
-    void OnMove(InputValue input)
+    
+    //OnMove is Input System's function to be able to use input
+    void OnMove(InputValue input) 
     {
         moveInput = input.Get<Vector2>();
+        Debug.Log(moveInput);
     }
 
-
-    void Walk()
+    //In this method i do two things, first walk or run character based on moveInput,
+    //second show the appropriate animation based on current movement(walking or running)
+    void WalkingAndRunningHandle()
     {
-        myRb.velocity = new Vector2(moveInput.x * walkingSpeed, myRb.velocity.y);
 
-        if(Mathf.Abs(myRb.velocity.x)>  0) isWalking = true;      
-        else isWalking = false;
-        
+        //Standing
+        if (Mathf.Abs(moveInput.x) <= leftStickSensitivity)
+        {
+            isRunning = false;
+            isWalking = false;
+        }
+
+        //Walking
+        else if (Mathf.Abs(moveInput.x) < walkingAndRunningTransitionLimit)
+        {
+            
+            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * 0.3f * walkingSpeed, myRb.velocity.y);
+
+            isWalking = true;
+            isRunning= false;
+ 
+        }
+
+        //Running
+        else
+        {
+            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * 0.8f * walkingSpeed, myRb.velocity.y);
+
+            isWalking = false;
+            isRunning = true;
+
+        }
+    
     }
 
+    //Simply for managing sprite direction based on velocity
     void SpriteChangesInAction()
     {
         if(myRb.velocity.x > Mathf.Epsilon)
@@ -80,19 +108,29 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    void AnimationHandling()
+    //With this method and one below, i do control animation transitions by script itself,
+    //because it is a bit excessive to use unity built-in system in 2D game development.
+    void AnimationHandle()
     {
-        if (isWalking)
+        if (isRunning)
+        {
+            //will be implemented later
+            IdlingCounter(false);
+        }
+        else if (isWalking)
         {
             ChangeAnimationState(walkingAnim);
+            IdlingCounter(false);
         }
         else if (isIdling)
         {
-            ChangeAnimationState(idleAnim);       
+            ChangeAnimationState(idleAnim);
+            IdlingCounter(false);
         }
         else
         {
             ChangeAnimationState(ordinaryStance);
+            IdlingCounter(true);
         }
     }
 
@@ -106,13 +144,28 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    IEnumerator IdlingTimeGap()
+    //With this method and one below, i do count the time passed after standing still and 
+    //animate character for idle if a certain time passed 
+    void IdlingCounter(bool isComingFromOrdinaryStanceAnim)
     {
+        if (!isComingFromOrdinaryStanceAnim)
+        {
+            lastTimeIdle = Time.time;
+        }
 
-        yield return new WaitForSeconds(2f);
-        isIdling= false;
+        else if (Time.time - lastTimeIdle >= 4f)
+        {
+            lastTimeIdle = Time.time;
+            StartCoroutine(IdlingTimePeriod());
+
+        }
+
     }
-
-
+    IEnumerator IdlingTimePeriod()
+    {
+        isIdling = true;
+        yield return new WaitForSeconds(2f);
+        isIdling = false;
+    }
 
 }

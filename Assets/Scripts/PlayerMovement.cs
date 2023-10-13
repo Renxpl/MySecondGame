@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]float walkingSpeed;
     [SerializeField] float runningSpeed;
     [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
-    [SerializeField] float leftStickSensitivity = 0.2f;
+    [SerializeField] float leftStickThreshold = 0.2f;
 
     //Assigning to variables
     void Start()
@@ -52,20 +52,20 @@ public class PlayerMovement : MonoBehaviour
     }
 
     
-    //OnMove is Input System's function to be able to use input
+    //OnMove is Input System's function to use input
     void OnMove(InputValue input) 
     {
         moveInput = input.Get<Vector2>();
-        Debug.Log(moveInput);
+        Debug.Log("MoveInput Debug Display " + moveInput);
     }
 
     //In this method i do two things, first walk or run character based on moveInput,
-    //second show the appropriate animation based on current movement(walking or running)
+    //second show the proper animation based on current movement(walking or running)
     void WalkingAndRunningHandle()
     {
 
         //Standing
-        if (Mathf.Abs(moveInput.x) <= leftStickSensitivity)
+        if (Mathf.Abs(moveInput.x) <= leftStickThreshold)
         {
             isRunning = false;
             isWalking = false;
@@ -75,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         else if (Mathf.Abs(moveInput.x) < walkingAndRunningTransitionLimit)
         {
             
-            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * 0.3f * walkingSpeed, myRb.velocity.y);
+            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * walkingSpeed, myRb.velocity.y);
 
             isWalking = true;
             isRunning= false;
@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
         //Running
         else
         {
-            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * 0.8f * walkingSpeed, myRb.velocity.y);
+            myRb.velocity = new Vector2(Mathf.Sign(moveInput.x) * runningSpeed, myRb.velocity.y);
 
             isWalking = false;
             isRunning = true;
@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector2(0.6f , 0.6f);
         }
-        if (myRb.velocity.x < -Mathf.Epsilon)
+        else if (myRb.velocity.x < -Mathf.Epsilon)
         {
             transform.localScale = new Vector2(-0.6f, 0.6f);
         }
@@ -164,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator IdlingTimePeriod()
     {
         isIdling = true;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.2f);
         isIdling = false;
     }
 

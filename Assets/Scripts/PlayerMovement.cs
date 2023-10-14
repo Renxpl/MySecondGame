@@ -29,12 +29,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
     [SerializeField] float leftStickThreshold = 0.2f;
 
+
+    Coroutine idleAnimCoroutine;
+
     //Assigning to variables
     void Start()
     {
         playerAnimator= GetComponent<Animator>();
         lastTimeIdle= Time.time;
         myRb= GetComponent<Rigidbody2D>();
+        
     }
 
     void Update()
@@ -49,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
     void LateUpdate()
     {
         AnimationHandle();
+
     }
 
     
@@ -112,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
     //because it is a bit excessive to use unity built-in system in 2D game development.
     void AnimationHandle()
     {
+
         if (isRunning)
         {
             //will be implemented later
@@ -125,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
         else if (isIdling)
         {
             ChangeAnimationState(idleAnim);
-            IdlingCounter(false);
+            
         }
         else
         {
@@ -145,18 +151,19 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //With this method and one below, i do count the time passed after standing still and 
-    //animate character for idle if a certain time passed 
+    //animate character for idle animation if a certain time passed 
     void IdlingCounter(bool isComingFromOrdinaryStanceAnim)
     {
         if (!isComingFromOrdinaryStanceAnim)
         {
             lastTimeIdle = Time.time;
+            if (isIdling) { StopCoroutine(idleAnimCoroutine); isIdling = false;}//to prevent possible bug can occur due to animation transition
         }
 
-        else if (Time.time - lastTimeIdle >= 4f)
+        else if (Time.time - lastTimeIdle >= 5f)
         {
             lastTimeIdle = Time.time;
-            StartCoroutine(IdlingTimePeriod());
+            idleAnimCoroutine = StartCoroutine(IdlingTimePeriod());
 
         }
 

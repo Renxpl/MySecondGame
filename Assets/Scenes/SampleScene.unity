@@ -340,7 +340,7 @@ MonoBehaviour:
   walkingSpeed: 1.5
   runningSpeed: 3
   walkingAndRunningTransitionLimit: 0.725
-  leftStickThreshold: 0.2
+  leftStickThreshold: 0.15
 --- !u!114 &479961950
 MonoBehaviour:
   m_ObjectHideFlags: 0

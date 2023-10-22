@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     string idleAnim = "Idle";
     string ordinaryStance = "OrdinaryStance";
     string walkingAnim = "WalkingTest";
+    string runningAnim = "Running";
 
     bool isIdling = false;
     bool isWalking = false;
@@ -120,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (isRunning)
         {
-            //will be implemented later
+            ChangeAnimationState(runningAnim);
             IdlingCounter(false);
         }
         else if (isWalking)

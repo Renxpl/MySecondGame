@@ -41,6 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Parallax Sun
+    uniqueID: 479047861
+    locked: 0
+  - name: Parallax Sky
+    uniqueID: 3441731155
+    locked: 0
+  - name: Parallax Ground
+    uniqueID: 3425725327
+    locked: 0
+  - name: Ground
+    uniqueID: 1623510509
+    locked: 0
   - name: Main Character
     uniqueID: 3989420693
     locked: 0

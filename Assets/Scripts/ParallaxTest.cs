@@ -48,8 +48,8 @@ public class ParallaxTest : MonoBehaviour
         
 
         lastTime = Time.realtimeSinceStartup;
-        //MovingParallax(1);
-        StartCoroutine(InterpolatingParallaxMovement(10));
+        MovingParallax(1);
+        //StartCoroutine(InterpolatingParallaxMovement(5));
         //  if (cameraTransform.position.x - objects[0].position.x  > 0 && counter == 0)
         // {
         //   ReproductionOfParallax();
@@ -65,7 +65,7 @@ public class ParallaxTest : MonoBehaviour
 
     void LateUpdate()
     {
-
+       
 
     }
 

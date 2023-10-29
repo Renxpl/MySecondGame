@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class ParallaxTest : MonoBehaviour
@@ -17,6 +19,8 @@ public class ParallaxTest : MonoBehaviour
     Vector2[] parallaxStartingPositions= new Vector2[3];
     public float speedingParallax;
 
+    public Rigidbody2D sun;
+
     //int counter = 0;
     
     float lastTime;
@@ -25,12 +29,13 @@ public class ParallaxTest : MonoBehaviour
     {
         cameraTransform = this.transform;
         cameraStartingPosition= transform.position;
-
+        
         for(int i = 0; i < objects.Length; i++)
         {
             parallaxStartingPositions[i] = objects[i].position;
 
         }
+       
 
 
 
@@ -41,15 +46,9 @@ public class ParallaxTest : MonoBehaviour
     void Update()
     {
 
-        cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
+        
 
-        for (int i = 0; i < objects.Length; i++)
-        {
-            targets[i] = parallaxStartingPositions[i] + cameraTotalDisplacement;
-
-        }
-        objects[2].position = Vector2.Lerp(objects[2].position, targets[2], Time.deltaTime);
-
+        //sun.MovePosition(targets[2]);
 
         //frameTime = Time.realtimeSinceStartup - lastTime;
 
@@ -87,20 +86,102 @@ public class ParallaxTest : MonoBehaviour
         //   ReproductionOfParallax();
         // counter++;
         //}
-        
 
+    
 
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-      
+        /*if (latestTransformPositionX != cameraTransform.position.x || latestTransformPositionY != cameraTransform.position.y)
+        {
+            differenceTransformPositionX = cameraTransform.position.x - latestTransformPositionX;
+            differenceTransformPositionY = cameraTransform.position.y - latestTransformPositionY;
+
+
+
+
+            latestTransformPositionX = cameraTransform.position.x;
+            latestTransformPositionY = cameraTransform.position.y;
+        }
+
+        else
+        {
+            differenceTransformPositionX = 0;
+            differenceTransformPositionY = 0;
+        }
+        */
+        
+        //objects[2].position = Vector2.Lerp(objects[2].position, targets[2], 1 );
+        //sun.velocity = (targets[2] - (Vector2)sun.gameObject.transform.position)/ Time.fixedDeltaTime;
+        //sun.MovePosition(new Vector2(sun.gameObject.transform.position.x + (differenceTransformPositionX),
+        //sun.gameObject.transform.position.y + (differenceTransformPositionY) ));
+
+        cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            targets[i] = parallaxStartingPositions[i] + cameraTotalDisplacement;
+
+        }
+
+
     }
+
 
     void LateUpdate()
     {
         // StartCoroutine(InterpolatingParallaxMovement(25));
+        /*if (latestTransformPositionX != cameraTransform.position.x || latestTransformPositionY != cameraTransform.position.y)
+        {
+            differenceTransformPositionX = cameraTransform.position.x - latestTransformPositionX;
+            differenceTransformPositionY = cameraTransform.position.y - latestTransformPositionY;
+
+
+
+
+            latestTransformPositionX = cameraTransform.position.x;
+            latestTransformPositionY = cameraTransform.position.y;
+        }
+
+        else
+        {
+            differenceTransformPositionX = 0;
+            differenceTransformPositionY = 0;
+        }*/
+
+
+        //objects[2].position = Vector2.Lerp(objects[2].position, targets[2], 1 );
+
+        /*   objects[0].position = new Vector2(objects[0].position.x + ((differenceTransformPositionX / 2f)),
+        objects[0].position.y + ((differenceTransformPositionY / 2f)));
+
+                objects[1].position = new Vector2(objects[1].position.x + ((differenceTransformPositionX * 9.5f / 10)),
+             objects[1].position.y + ((differenceTransformPositionY * 9.5f / 10) ));
+        */
+
+
+
+
+        //objects[2].position = new Vector2(objects[2].position.x + ((differenceTransformPositionX) ),
+        //objects[2].position.y + ((differenceTransformPositionY)));
+
+
+        cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            targets[i] = parallaxStartingPositions[i] + cameraTotalDisplacement;
+
+        }
         
+
+        if (Mathf.Abs(targets[2].x - objects[2].position.x) > 1 / 100f)
+        {
+            objects[2].position = Vector2.Lerp(objects[2].position , targets[2],  Time.deltaTime * 15);       
+
+
+        }
     }
 
     void MovingParallax(int divider)

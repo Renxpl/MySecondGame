@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 281041869}
   - component: {fileID: 281041868}
+  - component: {fileID: 281041870}
   m_Layer: 0
   m_Name: Parallax test sun
   m_TagString: Untagged
@@ -207,6 +208,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &281041870
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 281041867}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &332381031
 GameObject:
   m_ObjectHideFlags: 0
@@ -559,6 +581,7 @@ MonoBehaviour:
   - {fileID: 1469313543}
   - {fileID: 281041869}
   speedingParallax: 15
+  sun: {fileID: 281041870}
 --- !u!114 &519420038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,7 +652,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &525970893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,7 +665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aa8b42c7b0549341a690ad1fb38dc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: 50
+  limit: 60
 --- !u!4 &525970894
 Transform:
   m_ObjectHideFlags: 0

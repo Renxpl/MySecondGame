@@ -117,13 +117,7 @@ public class ParallaxTest : MonoBehaviour
         //sun.MovePosition(new Vector2(sun.gameObject.transform.position.x + (differenceTransformPositionX),
         //sun.gameObject.transform.position.y + (differenceTransformPositionY) ));
 
-        cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
-
-        for (int i = 0; i < objects.Length; i++)
-        {
-            targets[i] = parallaxStartingPositions[i] + cameraTotalDisplacement;
-
-        }
+       
 
 
     }
@@ -169,19 +163,25 @@ public class ParallaxTest : MonoBehaviour
 
         cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
 
-        for (int i = 0; i < objects.Length; i++)
+        //for (int i = 0; i < objects.Length; i++)
+        //{
+            targets[2] = parallaxStartingPositions[2] + cameraTotalDisplacement;
+            targets[0] = parallaxStartingPositions[0] + (cameraTotalDisplacement / 2f);
+            targets[1] = parallaxStartingPositions[1] + (cameraTotalDisplacement * 9f / 10);
+        //}
+
+
+        if (Mathf.Abs(targets[2].x - objects[2].position.x) > 1 / 17f)
         {
-            targets[i] = parallaxStartingPositions[i] + cameraTotalDisplacement;
+
+
+            objects[2].position = Vector2.Lerp(objects[2].position , targets[2],  Time.deltaTime * 20);
+            objects[0].position = Vector2.Lerp(objects[0].position, targets[0], Time.deltaTime * 20);
+            objects[1].position = Vector2.Lerp(objects[1].position, targets[1], Time.deltaTime * 20);
 
         }
         
 
-        if (Mathf.Abs(targets[2].x - objects[2].position.x) > 1 / 100f)
-        {
-            objects[2].position = Vector2.Lerp(objects[2].position , targets[2],  Time.deltaTime * 15);       
-
-
-        }
     }
 
     void MovingParallax(int divider)

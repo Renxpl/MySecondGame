@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,6 +9,8 @@ using UnityEngine.UIElements;
 public class ParallaxTest : MonoBehaviour
 {
     public Transform[] objects;
+    public Transform playerTransform;
+    Transform[] spare = new Transform[3];
     Transform cameraTransform;
     float latestTransformPositionX;
     float latestTransformPositionY;
@@ -18,7 +21,7 @@ public class ParallaxTest : MonoBehaviour
     Vector2[] targets = new Vector2[3];
     Vector2[] parallaxStartingPositions= new Vector2[3];
     public float speedingParallax;
-
+    int counter;
     public Rigidbody2D sun;
 
     //int counter = 0;
@@ -81,11 +84,11 @@ public class ParallaxTest : MonoBehaviour
         Debug.Log(frameTime);
         //MovingParallax(1);
         //StartCoroutine(InterpolatingParallaxMovement(10));
-        //  if (cameraTransform.position.x - objects[0].position.x  > 0 && counter == 0)
-        // {
-        //   ReproductionOfParallax();
-        // counter++;
-        //}
+        //if (playerTransform.position.x - (objects[0].position.x + 2)  > 0 && counter == 0)
+        //{
+         //   ReproductionOfParallax();
+          //  counter++;
+        //<}
 
     
 
@@ -214,8 +217,10 @@ public class ParallaxTest : MonoBehaviour
     void ReproductionOfParallax()
     {
 
+        float direction = Mathf.Sign(playerTransform.localScale.x);
         GameObject testing = Instantiate(objects[0].gameObject);
-        testing.transform.position = new Vector2(15, 1);
+        testing.transform.position = new Vector2(objects[0].position.x + (direction * 16f), objects[0].position.y);
+        spare[0]= objects[0];
         objects[0] = testing.transform;
 
     }

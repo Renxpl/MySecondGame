@@ -558,6 +558,7 @@ MonoBehaviour:
   - {fileID: 589834392}
   - {fileID: 1469313543}
   - {fileID: 281041869}
+  playerTransform: {fileID: 479961947}
   speedingParallax: 15
   sun: {fileID: 0}
 --- !u!114 &519420038

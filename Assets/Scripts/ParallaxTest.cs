@@ -8,7 +8,10 @@ using UnityEngine.UIElements;
 public class ParallaxTest : MonoBehaviour
 {
     public Transform[] groundsTransforms;
-    Transform middleGround;
+    public Transform sunTransform;
+    Vector2 sunStartingPosition;
+    public Transform[] cloudTransforms;
+
     public Transform playerTransform;
     
     Transform cameraTransform;
@@ -20,12 +23,15 @@ public class ParallaxTest : MonoBehaviour
     Vector2 cameraTotalDisplacement;
     Vector2[] targetsForGround = new Vector2[3];
     Vector2[] parallaxStartingPositions= new Vector2[3];
+    Vector2[] parallaxStartingPositionsForSky = new Vector2[3];
     public float speedingParallax;
     int counter;
-    
+    int counterForSky;
+    Vector2[] targetsForSky = new Vector2[3];
+    Vector2 targetForSun;
 
     //int counter = 0;
-    
+
     float lastTime;
     float frameTime;
     void Start()
@@ -40,11 +46,25 @@ public class ParallaxTest : MonoBehaviour
         groundsTransforms[2] = Instantiate(groundsTransforms[1]);
         groundsTransforms[2].position = new Vector2(groundsTransforms[1].position.x + 16f, groundsTransforms[1].position.y);
 
+        cloudTransforms[0] = Instantiate(cloudTransforms[1]);
+        cloudTransforms[0].position = new Vector2(cloudTransforms[1].position.x - 16f, cloudTransforms[1].position.y);
+
+        cloudTransforms[2] = Instantiate(cloudTransforms[1]);
+        cloudTransforms[2].position = new Vector2(cloudTransforms[1].position.x + 16f, cloudTransforms[1].position.y);
+
+
         for (int i = 0; i < groundsTransforms.Length; i++)
         {
             parallaxStartingPositions[i] = groundsTransforms[i].position;
 
         }
+        for (int i = 0; i < groundsTransforms.Length; i++)
+        {
+            parallaxStartingPositionsForSky[i] = cloudTransforms[i].position;
+
+        }
+
+        sunStartingPosition = sunTransform.position;
 
 
     }
@@ -92,7 +112,7 @@ public class ParallaxTest : MonoBehaviour
         //{
          //   ReproductionOfParallax();
           //  counter++;
-        //<}
+        //}
 
     
 
@@ -166,7 +186,7 @@ public class ParallaxTest : MonoBehaviour
 
         //objects[2].position = new Vector2(objects[2].position.x + ((differenceTransformPositionX) ),
         //objects[2].position.y + ((differenceTransformPositionY)));
-        middleGround = groundsTransforms[1];
+        
 
         cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
 
@@ -189,67 +209,11 @@ public class ParallaxTest : MonoBehaviour
         }*/
 
 
-        
 
-        if (this.transform.position.x > (groundsTransforms[1].position.x + 8f))
-        {
-            Transform spare;
-            Vector2 spare2, spare3;
-            
-            spare = groundsTransforms[0];
-            spare2 = parallaxStartingPositions[1];
-            groundsTransforms[1] = groundsTransforms[2];
-            parallaxStartingPositions[1] = parallaxStartingPositions[2];
-            spare3 = parallaxStartingPositions[0];
-            parallaxStartingPositions[0] = spare2;
-            groundsTransforms[0] = middleGround;
-            groundsTransforms[2] = spare;
-            parallaxStartingPositions[2] = spare3;
-            
-            parallaxStartingPositions[2].x += 48f;
 
-            for (int i = 0; i < 3; i++)
-            {
-                targetsForGround[i] = parallaxStartingPositions[i] + (cameraTotalDisplacement / 2f);
-            }
-
-            groundsTransforms[2].position = Vector2.Lerp(groundsTransforms[2].position, targetsForGround[2], 1);
-            
-        }
-            
-
-        else if(this.transform.position.x < (groundsTransforms[1].position.x - 8f))
-        {
-            Transform spare;
-            Vector2 spare2, spare3;
-
-            spare = groundsTransforms[2];
-            spare2 = parallaxStartingPositions[1];
-            groundsTransforms[1] = groundsTransforms[0];
-            parallaxStartingPositions[1] = parallaxStartingPositions[0];
-            spare3 = parallaxStartingPositions[2];
-            parallaxStartingPositions[2] = spare2;
-            groundsTransforms[2] = middleGround;
-            groundsTransforms[0] = spare;
-            parallaxStartingPositions[0] = spare3;
-
-            parallaxStartingPositions[0].x -= 48f;
-
-            for (int i = 0; i < 3; i++)
-            {
-                targetsForGround[i] = parallaxStartingPositions[i] + (cameraTotalDisplacement / 2f);
-            }
-
-            groundsTransforms[0].position = Vector2.Lerp(groundsTransforms[0].position, targetsForGround[0], 1);
-            
-
-        }
+        ReproductionOfParallax();
 
         GroundParallaxTranform();
-
-
-
-
 
 
 
@@ -265,6 +229,12 @@ public class ParallaxTest : MonoBehaviour
 
         }
 
+        for (int i = 0; i < 3; i++)
+        {
+            targetsForSky[i] = parallaxStartingPositionsForSky[i] + (cameraTotalDisplacement * 9f / 10f);
+
+        }
+
         if (Mathf.Abs(targetsForGround[2].x - groundsTransforms[2].position.x) > 1 / 32f)
         {
 
@@ -272,6 +242,25 @@ public class ParallaxTest : MonoBehaviour
             groundsTransforms[2].position = Vector2.Lerp(groundsTransforms[2].position, targetsForGround[2], Time.deltaTime * 20);
             groundsTransforms[0].position = Vector2.Lerp(groundsTransforms[0].position, targetsForGround[0], Time.deltaTime * 20);
             groundsTransforms[1].position = Vector2.Lerp(groundsTransforms[1].position, targetsForGround[1], Time.deltaTime * 20);
+
+        }
+
+        if (Mathf.Abs(targetsForSky[2].x - cloudTransforms[2].position.x) > 1 / 32f)
+        {
+
+
+            cloudTransforms[2].position = Vector2.Lerp(cloudTransforms[2].position, targetsForSky[2], Time.deltaTime * 20);
+            cloudTransforms[0].position = Vector2.Lerp(cloudTransforms[0].position, targetsForSky[0], Time.deltaTime * 20);
+            cloudTransforms[1].position = Vector2.Lerp(cloudTransforms[1].position, targetsForSky[1], Time.deltaTime * 20);
+
+        }
+
+        targetForSun = sunStartingPosition + cameraTotalDisplacement;
+
+        if (Mathf.Abs(targetForSun.x - sunTransform.position.x) > 1 / 128f)
+        {
+
+            sunTransform.position = Vector2.Lerp(sunTransform.position, targetForSun, Time.deltaTime * 20);            
 
         }
     }
@@ -306,13 +295,69 @@ public class ParallaxTest : MonoBehaviour
 
     void ReproductionOfParallax()
     {
-/*
-        float direction = Mathf.Sign(playerTransform.localScale.x);
-        GameObject testing = Instantiate(objects[0].gameObject);
-        testing.transform.position = new Vector2(objects[0].position.x + (direction * 16f), objects[0].position.y);
-        
-        objects[0] = testing.transform;
-*/
+        /*
+                float direction = Mathf.Sign(playerTransform.localScale.x);
+                GameObject testing = Instantiate(objects[0].gameObject);
+                testing.transform.position = new Vector2(objects[0].position.x + (direction * 16f), objects[0].position.y);
+
+                objects[0] = testing.transform;
+        */
+
+
+
+        if (this.transform.position.x > (groundsTransforms[(counter + 1) % 3].position.x + 8f))
+        {
+            parallaxStartingPositions[(counter % 3)].x += 48f;
+
+            targetsForGround[counter % 3] = parallaxStartingPositions[counter % 3] + (cameraTotalDisplacement / 2f);
+
+            groundsTransforms[counter % 3].position = Vector2.Lerp(groundsTransforms[counter % 3].position, targetsForGround[counter % 3], 1);
+
+            counter++;
+        }
+
+
+
+
+        else if (this.transform.position.x < (groundsTransforms[(counter + 1) % 3].position.x - 8f))
+        {
+            parallaxStartingPositions[((counter + 2) % 3)].x -= 48f;
+
+            targetsForGround[((counter + 2) % 3)] = parallaxStartingPositions[((counter + 2) % 3)] + (cameraTotalDisplacement / 2f);
+
+            groundsTransforms[((counter + 2) % 3)].position = Vector2.Lerp(groundsTransforms[((counter + 2) % 3)].position, targetsForGround[((counter + 2) % 3)], 1);
+
+            counter--;
+        }
+
+
+
+
+
+        if (this.transform.position.x > (cloudTransforms[(counterForSky + 1) % 3].position.x + 8f))
+        {
+            parallaxStartingPositionsForSky[(counterForSky % 3)].x += 48f;
+
+            targetsForSky[counterForSky % 3] = parallaxStartingPositionsForSky[counterForSky % 3] + (cameraTotalDisplacement / 2f);
+
+            cloudTransforms[counterForSky % 3].position =  targetsForSky[counterForSky % 3];
+
+            counterForSky++;
+        }
+
+
+
+
+        else if (this.transform.position.x < (cloudTransforms[(counterForSky + 1) % 3].position.x - 8f))
+        {
+            parallaxStartingPositionsForSky[((counterForSky + 2) % 3)].x -= 48f;
+
+            targetsForSky[((counterForSky + 2) % 3)] = parallaxStartingPositionsForSky[((counterForSky + 2) % 3)] + (cameraTotalDisplacement / 2f);
+
+            cloudTransforms[((counterForSky + 2) % 3)].position = targetsForSky[((counter + 2) % 3)];
+
+            counterForSky--;
+        }
 
     }
 

@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 
 public class ParallaxTest : MonoBehaviour
 {
-    public Transform[] objects;
+    public Transform[] groundsTransforms;
+    Transform middleGround;
     public Transform playerTransform;
-    Transform[] spare = new Transform[3];
+    
     Transform cameraTransform;
     float latestTransformPositionX;
     float latestTransformPositionY;
@@ -18,11 +18,11 @@ public class ParallaxTest : MonoBehaviour
     float differenceTransformPositionY;
     Vector2 cameraStartingPosition;
     Vector2 cameraTotalDisplacement;
-    Vector2[] targets = new Vector2[3];
+    Vector2[] targetsForGround = new Vector2[3];
     Vector2[] parallaxStartingPositions= new Vector2[3];
     public float speedingParallax;
     int counter;
-    public Rigidbody2D sun;
+    
 
     //int counter = 0;
     
@@ -32,15 +32,19 @@ public class ParallaxTest : MonoBehaviour
     {
         cameraTransform = this.transform;
         cameraStartingPosition= transform.position;
-        
-        for(int i = 0; i < objects.Length; i++)
+
+
+        groundsTransforms[0]  = Instantiate(groundsTransforms[1]);
+        groundsTransforms[0].position = new Vector2(groundsTransforms[1].position.x - 16f, groundsTransforms[1].position.y);
+
+        groundsTransforms[2] = Instantiate(groundsTransforms[1]);
+        groundsTransforms[2].position = new Vector2(groundsTransforms[1].position.x + 16f, groundsTransforms[1].position.y);
+
+        for (int i = 0; i < groundsTransforms.Length; i++)
         {
-            parallaxStartingPositions[i] = objects[i].position;
+            parallaxStartingPositions[i] = groundsTransforms[i].position;
 
         }
-       
-
-
 
 
     }
@@ -162,29 +166,114 @@ public class ParallaxTest : MonoBehaviour
 
         //objects[2].position = new Vector2(objects[2].position.x + ((differenceTransformPositionX) ),
         //objects[2].position.y + ((differenceTransformPositionY)));
-
+        middleGround = groundsTransforms[1];
 
         cameraTotalDisplacement = (Vector2)transform.position - cameraStartingPosition;
 
         //for (int i = 0; i < objects.Length; i++)
         //{
-            targets[2] = parallaxStartingPositions[2] + cameraTotalDisplacement;
-            targets[0] = parallaxStartingPositions[0] + (cameraTotalDisplacement / 2f);
-            targets[1] = parallaxStartingPositions[1] + (cameraTotalDisplacement * 9f / 10);
+        //targets[2] = parallaxStartingPositions[2] + cameraTotalDisplacement;
+
+        //targets[1] = parallaxStartingPositions[1] + (cameraTotalDisplacement * 9f / 10);
         //}
 
 
-        if (Mathf.Abs(targets[2].x - objects[2].position.x) > 1 / 17f)
+        /*if (Mathf.Abs(targets[2].x - objects[2].position.x) > 1 / 17f)
         {
 
 
-            objects[2].position = Vector2.Lerp(objects[2].position , targets[2],  Time.deltaTime * 20);
+            objects[2].position = Vector2.Lerp(objects[2].position , targets[2],  Time.deltaTime * 20);            
             objects[0].position = Vector2.Lerp(objects[0].position, targets[0], Time.deltaTime * 20);
             objects[1].position = Vector2.Lerp(objects[1].position, targets[1], Time.deltaTime * 20);
 
-        }
+        }*/
+
+
         
 
+        if (this.transform.position.x > (groundsTransforms[1].position.x + 8f))
+        {
+            Transform spare;
+            Vector2 spare2, spare3;
+            
+            spare = groundsTransforms[0];
+            spare2 = parallaxStartingPositions[1];
+            groundsTransforms[1] = groundsTransforms[2];
+            parallaxStartingPositions[1] = parallaxStartingPositions[2];
+            spare3 = parallaxStartingPositions[0];
+            parallaxStartingPositions[0] = spare2;
+            groundsTransforms[0] = middleGround;
+            groundsTransforms[2] = spare;
+            parallaxStartingPositions[2] = spare3;
+            
+            parallaxStartingPositions[2].x += 48f;
+
+            for (int i = 0; i < 3; i++)
+            {
+                targetsForGround[i] = parallaxStartingPositions[i] + (cameraTotalDisplacement / 2f);
+            }
+
+            groundsTransforms[2].position = Vector2.Lerp(groundsTransforms[2].position, targetsForGround[2], 1);
+            
+        }
+            
+
+        else if(this.transform.position.x < (groundsTransforms[1].position.x - 8f))
+        {
+            Transform spare;
+            Vector2 spare2, spare3;
+
+            spare = groundsTransforms[2];
+            spare2 = parallaxStartingPositions[1];
+            groundsTransforms[1] = groundsTransforms[0];
+            parallaxStartingPositions[1] = parallaxStartingPositions[0];
+            spare3 = parallaxStartingPositions[2];
+            parallaxStartingPositions[2] = spare2;
+            groundsTransforms[2] = middleGround;
+            groundsTransforms[0] = spare;
+            parallaxStartingPositions[0] = spare3;
+
+            parallaxStartingPositions[0].x -= 48f;
+
+            for (int i = 0; i < 3; i++)
+            {
+                targetsForGround[i] = parallaxStartingPositions[i] + (cameraTotalDisplacement / 2f);
+            }
+
+            groundsTransforms[0].position = Vector2.Lerp(groundsTransforms[0].position, targetsForGround[0], 1);
+            
+
+        }
+
+        GroundParallaxTranform();
+
+
+
+
+
+
+
+    }
+
+
+
+    void GroundParallaxTranform()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            targetsForGround[i] = parallaxStartingPositions[i] + (cameraTotalDisplacement / 2f);
+
+        }
+
+        if (Mathf.Abs(targetsForGround[2].x - groundsTransforms[2].position.x) > 1 / 32f)
+        {
+
+
+            groundsTransforms[2].position = Vector2.Lerp(groundsTransforms[2].position, targetsForGround[2], Time.deltaTime * 20);
+            groundsTransforms[0].position = Vector2.Lerp(groundsTransforms[0].position, targetsForGround[0], Time.deltaTime * 20);
+            groundsTransforms[1].position = Vector2.Lerp(groundsTransforms[1].position, targetsForGround[1], Time.deltaTime * 20);
+
+        }
     }
 
     void MovingParallax(int divider)
@@ -204,7 +293,7 @@ public class ParallaxTest : MonoBehaviour
         //objects[1].position = Vector2.Lerp(objects[1].position, target1, Time.deltaTime);
         //objects[2].position = Vector2.Lerp(objects[2].position, target2, Time.deltaTime);
 
-        objects[0].position = new Vector2(objects[0].position.x + ((differenceTransformPositionX / 2f)/divider),
+/*        objects[0].position = new Vector2(objects[0].position.x + ((differenceTransformPositionX / 2f)/divider),
         objects[0].position.y + ((differenceTransformPositionY / 2f) / divider));
 
         objects[1].position = new Vector2(objects[1].position.x + ((differenceTransformPositionX * 9.5f / 10)/divider),
@@ -212,16 +301,18 @@ public class ParallaxTest : MonoBehaviour
 
         objects[2].position = new Vector2(objects[2].position.x + ((differenceTransformPositionX)/(float)divider),
         objects[2].position.y + ((differenceTransformPositionY) / (float)divider));
+*/
     }
 
     void ReproductionOfParallax()
     {
-
+/*
         float direction = Mathf.Sign(playerTransform.localScale.x);
         GameObject testing = Instantiate(objects[0].gameObject);
         testing.transform.position = new Vector2(objects[0].position.x + (direction * 16f), objects[0].position.y);
-        spare[0]= objects[0];
+        
         objects[0] = testing.transform;
+*/
 
     }
 

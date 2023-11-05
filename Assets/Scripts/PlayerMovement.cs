@@ -115,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //With this method and one below, i do control animation transitions by script itself,
-    //because it is a bit excessive to use unity built-in system in 2D game development.
+    //because it is a bit excessive to use unity built-in system for what my game requires.
     void AnimationHandle()
     {
 

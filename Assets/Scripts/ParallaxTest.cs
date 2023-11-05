@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -206,7 +207,7 @@ public class ParallaxTest : MonoBehaviour
         ReproductionOfParallax(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, 16f ,ref counterForSky, 9 / 10f, cameraTotalDisplacement);
         ReproductionOfParallax(groundsTransforms, parallaxStartingPositions, targetsForGround, 16f, ref counter, 1 / 2f, cameraTotalDisplacement);
         //GroundParallaxTranform();
-        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 1 / 64f, 20f);
+        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 1 / 32f, 20f);
         ParallaxTransform(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, cameraTotalDisplacement, 9f/10f, 1 / 64f, 20f);
         ParallaxTransform(groundsTransforms, parallaxStartingPositions, targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 20f);
 
@@ -294,8 +295,8 @@ public class ParallaxTest : MonoBehaviour
         if (Mathf.Abs(target.x - parallax.position.x) > pixelLimit)
         {
 
-            parallax.position = Vector2.Lerp(parallax.position, target, Time.deltaTime * lerpFactor);
-
+            Vector2 lerpResult = Vector2.Lerp(parallax.position, target, Time.deltaTime * lerpFactor);
+            parallax.position = new Vector2((float)Math.Round(lerpResult.x, 4) , (float)Math.Round(lerpResult.y, 4));
         }
 
 

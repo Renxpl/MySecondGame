@@ -73,7 +73,7 @@ public class ParallaxTest : MonoBehaviour
         ReproductionOfParallax(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, 16f ,ref counterForSky, 9 / 10f, cameraTotalDisplacement);
         ReproductionOfParallax(groundsTransforms, parallaxStartingPositions, targetsForGround, 16f, ref counter, 1 / 2f, cameraTotalDisplacement);
       
-        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 0f, 14f);
+        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 1/64f, 14f);
         ParallaxTransform(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, cameraTotalDisplacement, 9f/10f, 1/ 64f, 12f);
         ParallaxTransform(groundsTransforms, parallaxStartingPositions, targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 25f);
 
@@ -149,22 +149,9 @@ public class ParallaxTest : MonoBehaviour
 
         if (Mathf.Abs(target.x - parallax.position.x) > pixelLimit)
         {
-            //float number = 15f;
-
-            //Debug.Log(Mathf.Abs(target.x - parallax.position.x));
-          
-
-/*
-            if (Mathf.Abs(target.x - parallax.position.x) < (1 / 10f)) number = 5;
-            else if (Mathf.Abs(target.x - parallax.position.x) < (1 / 8f)) number = 12;
-            else if (Mathf.Abs(target.x - parallax.position.x) < (1 / 4f)) number = 20;
-            else if (Mathf.Abs(target.x - parallax.position.x) < (1 / 2f)) number = 20;
-            else number = 20;
-            Debug.Log(number);
-*/
             Vector2 lerpResult = Vector2.Lerp(parallax.position, target, Time.deltaTime * lerpFactor);
-            parallax.position = lerpResult;
-            //parallax.position = new Vector2((float)Math.Round(lerpResult.x, 5) , (float)Math.Round(lerpResult.y, 5));
+            //parallax.position = lerpResult;
+            parallax.position = new Vector2((float)Math.Round(lerpResult.x, 4) , (float)Math.Round(lerpResult.y, 4));
         }
 
     }

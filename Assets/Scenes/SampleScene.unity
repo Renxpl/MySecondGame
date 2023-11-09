@@ -564,7 +564,6 @@ MonoBehaviour:
   - {fileID: 1469313543}
   - {fileID: 0}
   playerTransform: {fileID: 479961947}
-  speedingParallax: 15
 --- !u!114 &519420038
 MonoBehaviour:
   m_ObjectHideFlags: 0

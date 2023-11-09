@@ -73,7 +73,7 @@ public class ParallaxTest : MonoBehaviour
         ReproductionOfParallax(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, 16f ,ref counterForSky, 9 / 10f, cameraTotalDisplacement);
         ReproductionOfParallax(groundsTransforms, parallaxStartingPositions, targetsForGround, 16f, ref counter, 1 / 2f, cameraTotalDisplacement);
       
-        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 1/64f, 14f);
+        ParallaxTransform(sunTransform, sunStartingPosition, targetForSun, cameraTotalDisplacement, 1f, 1/128f, 14f);
         ParallaxTransform(cloudTransforms, parallaxStartingPositionsForSky, targetsForSky, cameraTotalDisplacement, 9f/10f, 1/ 64f, 12f);
         ParallaxTransform(groundsTransforms, parallaxStartingPositions, targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 25f);
 
@@ -151,7 +151,7 @@ public class ParallaxTest : MonoBehaviour
         {
             Vector2 lerpResult = Vector2.Lerp(parallax.position, target, Time.deltaTime * lerpFactor);
             //parallax.position = lerpResult;
-            parallax.position = new Vector2((float)Math.Round(lerpResult.x, 4) , (float)Math.Round(lerpResult.y, 4));
+            parallax.position = new Vector2((float)Math.Round(lerpResult.x, 5) , (float)Math.Round(lerpResult.y, 5));
         }
 
     }

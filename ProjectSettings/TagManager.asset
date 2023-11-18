@@ -44,6 +44,9 @@ TagManager:
   - name: Parallax Sun
     uniqueID: 479047861
     locked: 0
+  - name: Parallax Back Mountains
+    uniqueID: 430293481
+    locked: 0
   - name: Parallax Sky
     uniqueID: 3441731155
     locked: 0

@@ -71,7 +71,7 @@ public class ParallaxTest : MonoBehaviour
         ReproductionOfParallax(groundsTransforms, parallaxStartingPositions, targetsForGround, 16f, ref counter, 1 / 2f, cameraTotalDisplacement);
         ReproductionOfParallax(backMountainTransforms, parallaxStartingPositionsForBM, targetsForBM, 16f, ref counterForBM, 7f / 10f, cameraTotalDisplacement);
 
-        ParallaxTransform(sunTransform, sunStartingPosition, ref targetForSun, cameraTotalDisplacement, 1f, 1/128f, 14f);
+        ParallaxTransform(sunTransform, sunStartingPosition, ref targetForSun, cameraTotalDisplacement, 1f, 1/21f, 14f);
         ParallaxTransform(cloudTransforms, parallaxStartingPositionsForSky,ref targetsForSky, cameraTotalDisplacement, 9f/10f, 1/ 64f, 12f);
         ParallaxTransform(groundsTransforms, parallaxStartingPositions,ref targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 25f);
         ParallaxTransform(backMountainTransforms, parallaxStartingPositionsForBM,ref targetsForBM, cameraTotalDisplacement, 7f / 10f, 1 / 64f, 20f);

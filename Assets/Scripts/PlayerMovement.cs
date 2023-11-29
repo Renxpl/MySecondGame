@@ -15,10 +15,12 @@ public class PlayerMovement : MonoBehaviour
     string ordinaryStance = "OrdinaryStance";
     string walkingAnim = "WalkingTest";
     string runningAnim = "Running";
+    string lightAttackAnim = "PlayerLightAttack";
 
     bool isIdling = false;
     bool isWalking = false;
     bool isRunning = false;
+    bool isLightAttacking = false;
 
     
     Vector2 moveInput;
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float runningSpeed;
     [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
     [SerializeField] float leftStickThreshold = 0.2f;
+    [SerializeField] float lightAttackDuration = 0.3f;
 
 
     Coroutine idleAnimCoroutine;
@@ -63,6 +66,12 @@ public class PlayerMovement : MonoBehaviour
     {
         moveInput = input.Get<Vector2>();
         Debug.Log("MoveInput Debug Display " + moveInput);
+    }
+
+    void OnFire(InputValue input)
+    {
+        isLightAttacking= true;
+        StartCoroutine(LightAttacking());
     }
 
     //In this method i do two things, first walk or run character based on moveInput,
@@ -118,8 +127,12 @@ public class PlayerMovement : MonoBehaviour
     //because it is a bit excessive to use unity built-in system for what my game requires.
     void AnimationHandle()
     {
-
-        if (isRunning)
+        if (isLightAttacking)
+        {
+            ChangeAnimationState(lightAttackAnim);
+            IdlingCounter(false);
+        }
+        else if (isRunning)
         {
             ChangeAnimationState(runningAnim);
             IdlingCounter(false);
@@ -174,6 +187,13 @@ public class PlayerMovement : MonoBehaviour
         isIdling = true;
         yield return new WaitForSeconds(1.2f);
         isIdling = false;
+    }
+
+
+    IEnumerator LightAttacking()
+    {
+        yield return new WaitForSeconds(lightAttackDuration);
+        isLightAttacking= false;
     }
 
 }

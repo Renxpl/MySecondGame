@@ -16,13 +16,15 @@ public class PlayerMovement : MonoBehaviour
     string walkingAnim = "WalkingTest";
     string runningAnim = "Running";
     string lightAttackAnim = "PlayerLightAttack";
+    string heavyAttackAnim = "HeavyAttackAnimation";
 
     bool isIdling = false;
     bool isWalking = false;
     bool isRunning = false;
     bool isLightAttacking = false;
+    bool isHeavyAttacking = false;
 
-    
+
     Vector2 moveInput;
     Rigidbody2D myRb;
 
@@ -32,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
     [SerializeField] float leftStickThreshold = 0.2f;
     [SerializeField] float lightAttackDuration = 0.3f;
+    [SerializeField] float heavyAttackDuration = 0.3f;
 
 
     Coroutine idleAnimCoroutine;
@@ -72,6 +75,14 @@ public class PlayerMovement : MonoBehaviour
     {
         isLightAttacking= true;
         StartCoroutine(LightAttacking());
+    }
+
+    void OnHeavyAttack()
+    {
+
+        isHeavyAttacking= true;
+        StartCoroutine(HeavyAttacking());
+
     }
 
     //In this method i do two things, first walk or run character based on moveInput,
@@ -127,7 +138,12 @@ public class PlayerMovement : MonoBehaviour
     //because it is a bit excessive to use unity built-in system for what my game requires.
     void AnimationHandle()
     {
-        if (isLightAttacking)
+        if (isHeavyAttacking)
+        {
+            ChangeAnimationState(heavyAttackAnim);
+            IdlingCounter(false);
+        }
+        else if (isLightAttacking)
         {
             ChangeAnimationState(lightAttackAnim);
             IdlingCounter(false);
@@ -195,5 +211,11 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(lightAttackDuration);
         isLightAttacking= false;
     }
+    IEnumerator HeavyAttacking()
+    {
+        yield return new WaitForSeconds(heavyAttackDuration);
+        isHeavyAttacking = false;
+    }
+
 
 }

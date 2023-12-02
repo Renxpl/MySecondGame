@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
 {
     Animator playerAnimator;
 
+    CompositeCollider2D groundCollider;
+    BoxCollider2D playerBoxCollider;
+
     float lastTimeIdle;
 
     string currentAnimation = "";
@@ -17,13 +20,16 @@ public class PlayerMovement : MonoBehaviour
     string runningAnim = "Running";
     string lightAttackAnim = "PlayerLightAttack";
     string heavyAttackAnim = "HeavyAttackAnimation";
+    string jumpingUpAnim = "JumpingUP";
+    string jumpingDownAnim = "JumpingDown";
 
     bool isIdling = false;
     bool isWalking = false;
     bool isRunning = false;
     bool isLightAttacking = false;
     bool isHeavyAttacking = false;
-
+    bool isJumpingUp = false;
+    bool isJumpingDown = false;
 
     Vector2 moveInput;
     Rigidbody2D myRb;
@@ -35,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float leftStickThreshold = 0.2f;
     [SerializeField] float lightAttackDuration = 0.3f;
     [SerializeField] float heavyAttackDuration = 0.3f;
-
+    [SerializeField] float jumpSpeed = 10f;
 
     Coroutine idleAnimCoroutine;
 
@@ -45,7 +51,8 @@ public class PlayerMovement : MonoBehaviour
         playerAnimator= GetComponent<Animator>();
         lastTimeIdle= Time.time;
         myRb= GetComponent<Rigidbody2D>();
-        
+        groundCollider = FindAnyObjectByType<CompositeCollider2D>();
+        playerBoxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -73,15 +80,37 @@ public class PlayerMovement : MonoBehaviour
 
     void OnFire(InputValue input)
     {
-        isLightAttacking= true;
-        StartCoroutine(LightAttacking());
+        if (!isJumpingDown && !isJumpingUp)
+        {
+            isLightAttacking = true;
+            StartCoroutine(LightAttacking());
+        }
     }
 
     void OnHeavyAttack()
     {
+        if (!isJumpingDown && !isJumpingUp)
+        {
+            isHeavyAttacking = true;
+            StartCoroutine(HeavyAttacking());
+        }
+    }
 
-        isHeavyAttacking= true;
-        StartCoroutine(HeavyAttacking());
+    void OnJump()
+    {
+        Jump();
+
+    }
+
+    void Jump()
+    {
+
+        if (playerBoxCollider.IsTouching(groundCollider))
+        {
+            myRb.velocity = new Vector2(myRb.velocity.x, jumpSpeed);
+
+
+        }
 
     }
 
@@ -123,14 +152,25 @@ public class PlayerMovement : MonoBehaviour
     //Simply for managing sprite direction based on velocity
     void SpriteChangesInAction()
     {
-        if(myRb.velocity.x > Mathf.Epsilon)
+        if(myRb.velocity.x > 0.0001f)
         {
             transform.localScale = new Vector2(0.6f , 0.6f);
         }
-        else if (myRb.velocity.x < -Mathf.Epsilon)
+        else if (myRb.velocity.x < -0.0001f)
         {
             transform.localScale = new Vector2(-0.6f, 0.6f);
         }
+        if(myRb.velocity.y > 0.0001f)
+        {
+            isJumpingUp = true;
+            isJumpingDown= false;
+        }
+        else if(myRb.velocity.y < -0.0001f)
+        {
+            isJumpingUp = false;
+            isJumpingDown= true;
+        }
+        else { isJumpingUp = false;  isJumpingDown = false; }
 
     }
 
@@ -138,7 +178,17 @@ public class PlayerMovement : MonoBehaviour
     //because it is a bit excessive to use unity built-in system for what my game requires.
     void AnimationHandle()
     {
-        if (isHeavyAttacking)
+        if (isJumpingUp)
+        {
+            ChangeAnimationState(jumpingUpAnim);
+            IdlingCounter(false);
+        }
+        else if (isJumpingDown)
+        {
+            ChangeAnimationState(jumpingDownAnim);
+            IdlingCounter(false);
+        }
+        else if (isHeavyAttacking)
         {
             ChangeAnimationState(heavyAttackAnim);
             IdlingCounter(false);

@@ -427,6 +427,7 @@ MonoBehaviour:
   leftStickThreshold: 0.15
   lightAttackDuration: 0.75
   heavyAttackDuration: 1
+  jumpSpeed: 14
 --- !u!114 &479961950
 MonoBehaviour:
   m_ObjectHideFlags: 0

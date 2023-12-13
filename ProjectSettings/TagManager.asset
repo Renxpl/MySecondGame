@@ -56,6 +56,9 @@ TagManager:
   - name: Ground
     uniqueID: 1623510509
     locked: 0
+  - name: dummy and some interactables
+    uniqueID: 3540317143
+    locked: 0
   - name: Main Character
     uniqueID: 3989420693
     locked: 0

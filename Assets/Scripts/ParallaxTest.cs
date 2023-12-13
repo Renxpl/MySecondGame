@@ -71,10 +71,10 @@ public class ParallaxTest : MonoBehaviour
         ReproductionOfParallax(groundsTransforms, parallaxStartingPositions, targetsForGround, 16f, ref counter, 1 / 2f, cameraTotalDisplacement);
         ReproductionOfParallax(backMountainTransforms, parallaxStartingPositionsForBM, targetsForBM, 16f, ref counterForBM, 7f / 10f, cameraTotalDisplacement);
 
-        ParallaxTransform(sunTransform, sunStartingPosition, ref targetForSun, cameraTotalDisplacement, 1f, 1/21f, 14f);
+        ParallaxTransform(sunTransform, sunStartingPosition, ref targetForSun, cameraTotalDisplacement, 1f, 1/128f, 14f);
         ParallaxTransform(cloudTransforms, parallaxStartingPositionsForSky,ref targetsForSky, cameraTotalDisplacement, 9f/10f, 1/ 64f, 12f);
-        ParallaxTransform(groundsTransforms, parallaxStartingPositions,ref targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 25f);
-        ParallaxTransform(backMountainTransforms, parallaxStartingPositionsForBM,ref targetsForBM, cameraTotalDisplacement, 7f / 10f, 1 / 64f, 20f);
+        ParallaxTransform(groundsTransforms, parallaxStartingPositions,ref targetsForGround, cameraTotalDisplacement, 1f / 2f, 1 / 128f, 25f, true);
+        ParallaxTransform(backMountainTransforms, parallaxStartingPositionsForBM,ref targetsForBM, cameraTotalDisplacement, 7f / 10f, 1 / 64f, 20f, true);
         Debug.Log(targetForSun);
 
     }
@@ -89,13 +89,56 @@ public class ParallaxTest : MonoBehaviour
             targets[i] = startingPositions[i] + (cameraDisplacement * speed);
         }
 
-        if (Mathf.Abs(targets[2].x - parallax[2].position.x) > pixelLimit)
+        if (Mathf.Abs(targets[2].x - parallax[2].position.x) > pixelLimit || Mathf.Abs(targets[2].y - parallax[2].position.y) > pixelLimit)
         {
 
-            parallax[2].position = Vector2.Lerp(parallax[2].position, targets[2], Time.deltaTime * lerpFactor);
-            parallax[0].position = Vector2.Lerp(parallax[0].position, targets[0], Time.deltaTime * lerpFactor);
-            parallax[1].position = Vector2.Lerp(parallax[1].position, targets[1], Time.deltaTime * lerpFactor);
+            Vector2 lerpResult2 = Vector2.Lerp(parallax[2].position, targets[2], Time.deltaTime * lerpFactor);
+            Vector2 lerpResult0 = Vector2.Lerp(parallax[0].position, targets[0], Time.deltaTime * lerpFactor);
+            Vector2 lerpResult1 = Vector2.Lerp(parallax[1].position, targets[1], Time.deltaTime * lerpFactor);
 
+            Vector2 lerpResult2y = Vector2.Lerp(parallax[2].position, targets[2], 1);
+            Vector2 lerpResult0y = Vector2.Lerp(parallax[0].position, targets[0], 1);
+            Vector2 lerpResult1y = Vector2.Lerp(parallax[1].position, targets[1], 1);
+
+            lerpResult2 = new Vector2(lerpResult2.x, lerpResult2y.y);
+            lerpResult0 = new Vector2(lerpResult0.x, lerpResult0y.y);
+            lerpResult1 = new Vector2(lerpResult1.x, lerpResult1y.y);
+
+
+            parallax[2].position = lerpResult2;
+            parallax[0].position = lerpResult0;
+            parallax[1].position = lerpResult1;
+        }
+
+    }
+
+    void ParallaxTransform(Transform[] parallax, Vector2[] startingPositions, ref Vector2[] targets, Vector2 cameraDisplacement, float speed, float pixelLimit, float lerpFactor, bool isGround)
+    {
+
+        for (int i = 0; i < 3; i++)
+        {
+            targets[i] = startingPositions[i] + (cameraDisplacement * speed);
+        }
+
+        if (Mathf.Abs(targets[2].x - parallax[2].position.x) > pixelLimit || Mathf.Abs(targets[2].y - parallax[2].position.y) > pixelLimit)
+        {
+
+            Vector2 lerpResult2 = Vector2.Lerp(parallax[2].position, targets[2], Time.deltaTime * lerpFactor);
+            Vector2 lerpResult0 = Vector2.Lerp(parallax[0].position, targets[0], Time.deltaTime * lerpFactor);
+            Vector2 lerpResult1 = Vector2.Lerp(parallax[1].position, targets[1], Time.deltaTime * lerpFactor);
+
+            //Vector2 lerpResult2y = Vector2.Lerp(parallax[2].position, targets[2], 1);
+            //Vector2 lerpResult0y = Vector2.Lerp(parallax[0].position, targets[0], 1);
+            //Vector2 lerpResult1y = Vector2.Lerp(parallax[1].position, targets[1], 1);
+
+            //lerpResult2 = new Vector2(lerpResult2.x, lerpResult2y.y);
+            //lerpResult0 = new Vector2(lerpResult0.x, lerpResult0y.y);
+            //lerpResult1 = new Vector2(lerpResult1.x, lerpResult1y.y);
+
+
+            parallax[2].position = lerpResult2;
+            parallax[0].position = lerpResult0;
+            parallax[1].position = lerpResult1;
         }
 
     }
@@ -105,9 +148,11 @@ public class ParallaxTest : MonoBehaviour
 
         target = startingPosition + (cameraDisplacement * speed);
 
-        if (Mathf.Abs(target.x - parallax.position.x) > pixelLimit)
+        if (Mathf.Abs(target.x - parallax.position.x) > pixelLimit ||Mathf.Abs(target.y - parallax.position.y) > pixelLimit)
         {
             Vector2 lerpResult = Vector2.Lerp(parallax.position, target, Time.deltaTime * lerpFactor);
+            Vector2 lerpResult2 = Vector2.Lerp(parallax.position, target, 1);
+            lerpResult = new Vector2(lerpResult.x, lerpResult2.y); 
             //parallax.position = lerpResult;
             parallax.position = new Vector2((float)Rounding(lerpResult.x, target.x - parallax.position.x) , (float)Rounding(lerpResult.y, target.y - parallax.position.y));
             

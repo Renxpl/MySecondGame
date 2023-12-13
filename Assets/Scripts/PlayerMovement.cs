@@ -39,8 +39,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float runningSpeed;
     [SerializeField] float walkingAndRunningTransitionLimit = 0.725f;
     [SerializeField] float leftStickThreshold = 0.2f;
-    [SerializeField] float lightAttackDuration = 0.3f;
-    [SerializeField] float heavyAttackDuration = 0.3f;
+    public float lightAttackDuration = 0.3f;
+    public float heavyAttackDuration = 0.3f;
     [SerializeField] float jumpSpeed = 10f;
 
     Coroutine idleAnimCoroutine;

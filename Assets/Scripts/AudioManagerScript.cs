@@ -22,13 +22,13 @@ public class AudioManagerScript : MonoBehaviour
             Destroy(this);
         }
 
-        foreach(Sound s in sounds)
+        foreach (Sound s in sounds)
         {
-            s.source = new AudioSource();
+            s.source = gameObject.AddComponent<AudioSource>();
             s.source.clip = s.audio;
             s.source.volume = s.volume;
-        }
 
+        }
 
     }
 
@@ -56,16 +56,10 @@ public class AudioManagerScript : MonoBehaviour
         }
     }
 
-
-
-
-
-
-
     // Start is called before the first frame update
     void Start()
     {
-        
+        Play("MainMusic", true);
     }
 
     // Update is called once per frame
